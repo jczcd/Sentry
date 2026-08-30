@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>sentinel_navigation</name>
+  <version>0.1.0</version>
+  <description>Nav2 Jazzy configuration for a RoboMaster omni Sentinel.</description>
+  <maintainer email="maintainer@example.com">Sentinel Maintainer</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>nav2_map_server</exec_depend>
+  <exec_depend>nav2_mppi_controller</exec_depend>
+  <exec_depend>nav2_smoother</exec_depend>
+  <exec_depend>nav2_smac_planner</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

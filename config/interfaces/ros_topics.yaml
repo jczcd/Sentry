@@ -1,10 +1,21 @@
-schema_version: 1
+schema_version: 2
 
+# Canonical ROS graph. Relative names in package code must resolve to these
+# absolute names regardless of whether a node is launched under /sentry.
 commands:
   raw_chassis:
     topic: /cmd_vel
     type: geometry_msgs/msg/Twist
-    owner: teleop_navigation_or_policy
+    owner: nav2_or_teleop_or_policy_mux
+  teleop_chassis:
+    topic: /cmd_vel_teleop
+    type: geometry_msgs/msg/Twist
+    owner: teleop_adapter
+  nav2_chassis:
+    topic: /sentry/cmd_vel_nav
+    type: geometry_msgs/msg/Twist
+    owner: nav2_controller
+    note: Optional diagnostic/input topic; it must be arbitrated into /cmd_vel.
   safe_chassis:
     topic: /sentry/cmd_vel_safe
     type: geometry_msgs/msg/Twist
@@ -12,25 +23,61 @@ commands:
   estop:
     topic: /sentry/estop
     type: std_msgs/msg/Bool
-    owner: safety_supervisor_and_authorized_operator
+    owner: mode_manager_or_authorized_operator
+  system_mode:
+    topic: /sentry/system_mode
+    type: std_msgs/msg/UInt8
+    owner: mode_manager
+
+tactical:
+  battle_state:
+    topic: /sentry/battle_state
+    type: sentinel_interfaces/msg/BattleState
+    owner: battle_state_adapter
+  observation:
+    topic: /sentry/policy/observation
+    type: sentinel_interfaces/msg/PolicyObservation
+    owner: observation_node
+  command:
+    topic: /sentry/policy/command
+    type: sentinel_interfaces/msg/TacticalCommand
+    owner: policy_node
+  target_request:
+    topic: /sentry/target_request
+    type: std_msgs/msg/Int8
+    owner: tactical_executor
+  weapons_free_request:
+    topic: /sentry/weapons_free_request
+    type: std_msgs/msg/Bool
+    owner: tactical_executor
+  target_safe:
+    topic: /sentry/target_safe
+    type: std_msgs/msg/Int8
+    owner: safety_supervisor_only
+    sentinel_value: -1
+  weapons_free_safe:
+    topic: /sentry/weapons_free_safe
+    type: std_msgs/msg/Bool
+    owner: safety_supervisor_only
 
 state:
   clock:
     topic: /clock
     type: rosgraph_msgs/msg/Clock
     simulation_only: true
-  odometry_ground_truth:
+  odometry:
     topic: /sentry/odom
     type: nav_msgs/msg/Odometry
-    owner_sim: Isaac_Sim
-  odometry_lio:
+    owner: selected_simulator_or_state_estimator
+  lio_odometry:
     topic: /sentry/lio/odom
     type: nav_msgs/msg/Odometry
-    owner: LIO
+    owner: point_lio
   joint_states:
     topic: /joint_states
     type: sensor_msgs/msg/JointState
-  lidar:
+    owner: selected_simulator_or_robot_state_publisher
+  lidar_points:
     topic: /sentry/lidar/points
     type: sensor_msgs/msg/PointCloud2
     frame: lidar_link
@@ -40,13 +87,28 @@ state:
     topic: /sentry/imu
     type: sensor_msgs/msg/Imu
     frame: imu_link
-  scan_debug:
+  scan:
     topic: /sentry/scan
     type: sensor_msgs/msg/LaserScan
     required: false
+  hardware_state:
+    topic: /sentry/hardware_state
+    type: sentinel_interfaces/msg/HardwareState
+    owner: selected_mock_or_hardware_bridge
+  system_status:
+    topic: /sentry/system_status
+    type: sentinel_interfaces/msg/SystemStatus
+    owner: safety_supervisor
 
 tf_ownership:
-  odom_to_base_link_sim: Isaac_Sim
+  clock: /clock
+  map_to_odom: localization_or_relocalization
+  odom_to_base_link_sim: Isaac_Sim_or_mock_hardware
   odom_to_base_link_real: state_estimator
   base_link_to_robot_links: robot_state_publisher
-  map_to_odom: localization_or_relocalization
+  global_topics: [/tf, /tf_static]
+
+rules:
+  - Only safety_supervisor publishes /sentry/cmd_vel_safe.
+  - MCP and diagnostics may not publish /sentry/cmd_vel_safe, motor currents, PWM, or CAN frames.
+  - Exactly one backend may own simulated or real odometry in a running mode.

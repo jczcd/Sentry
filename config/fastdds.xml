@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+  <!-- Force UDPv4 so participants on different Windows/Ubuntu hosts can talk. -->
+  <transport_descriptors>
+    <transport_descriptor>
+      <transport_id>sentinel_udp</transport_id>
+      <type>UDPv4</type>
+    </transport_descriptor>
+  </transport_descriptors>
+  <participant profile_name="sentinel_udp_profile" is_default_profile="true">
+    <rtps>
+      <userTransports>
+        <transport_id>sentinel_udp</transport_id>
+      </userTransports>
+      <useBuiltinTransports>false</useBuiltinTransports>
+    </rtps>
+  </participant>
+</profiles>

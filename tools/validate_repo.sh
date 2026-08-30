@@ -30,6 +30,9 @@ while IFS= read -r -d '' document; do
   python3 -m json.tool "$document" >/dev/null
 done < <(git ls-files -z '*.json' '*.code-workspace')
 
+printf '== Python unit tests ==\n'
+python3 -m unittest discover -s tests -v
+
 printf '== C++ swerve tests ==\n'
 if command -v cmake >/dev/null 2>&1; then
   cmake -S . -B "$temporary/build" -DSENTRY_BUILD_TESTS=ON

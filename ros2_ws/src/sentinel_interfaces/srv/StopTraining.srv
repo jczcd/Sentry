@@ -1,0 +1,4 @@
+bool force
+---
+bool accepted
+string reason

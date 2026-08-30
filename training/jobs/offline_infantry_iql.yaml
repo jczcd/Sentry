@@ -1,0 +1,6 @@
+kind: offline_rmuc
+repository: training/RMUC-OfflineRL
+trainer_config: configs/infantry_iql_tactical.yaml
+# Build this directory first from the official RMUC SQLite dataset.
+data: data/infantry_tactical
+output_root: artifacts/policies

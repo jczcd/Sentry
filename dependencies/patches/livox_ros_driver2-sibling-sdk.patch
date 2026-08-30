@@ -1,0 +1,32 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7344d08..aa73ec3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -245,12 +245,18 @@ else(ROS_EDITION STREQUAL "ROS2")
+     LIBRARY_NAME ${PROJECT_NAME}
+   )
+ 
+-  ## make sure the livox_lidar_sdk_shared library is installed
+-  find_library(LIVOX_LIDAR_SDK_LIBRARY liblivox_lidar_sdk_shared.so /usr/local/lib REQUIRED)
++  # Sentinel workspace compatibility: prefer the separately built official
++  # Livox-SDK2 sibling, while retaining upstream /usr/local compatibility.
++  set(LIVOX_SDK2_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../Livox-SDK2" CACHE PATH "Livox-SDK2 source root")
++  find_library(LIVOX_LIDAR_SDK_LIBRARY
++    NAMES livox_lidar_sdk_shared liblivox_lidar_sdk_shared.so
++    PATHS "${LIVOX_SDK2_ROOT}/build/sdk_core" /usr/local/lib
++    REQUIRED)
+ 
+   ##
+   find_path(LIVOX_LIDAR_SDK_INCLUDE_DIR
+     NAMES "livox_lidar_api.h" "livox_lidar_def.h"
++    PATHS "${LIVOX_SDK2_ROOT}/include" /usr/local/include
+     REQUIRED)
+ 
+   ## PCL library
+@@ -333,4 +339,4 @@ else(ROS_EDITION STREQUAL "ROS2")
+     launch_ROS2
+   )
+ 
+-endif()
+\ No newline at end of file
++endif()

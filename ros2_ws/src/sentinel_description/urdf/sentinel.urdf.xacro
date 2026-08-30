@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="sentinel_stage5d">
+  <!-- Generated from the validated Stage4 joint frames; semantic/RViz model only. -->
+  <!-- Isaac Stage5D USD remains the sole physics and collision truth. -->
+  <!-- All joints are continuous until physical limits are calibrated. -->
+  <link name="base_link"><visual><geometry><box size="0.42 0.42 0.20"/></geometry></visual></link>
+  <link name="steer_FL"><visual><geometry><box size="0.06 0.06 0.06"/></geometry></visual></link>
+  <link name="drive_FL"><visual><geometry><cylinder radius="0.052" length="0.056"/></geometry></visual></link>
+  <link name="steer_FR"><visual><geometry><box size="0.06 0.06 0.06"/></geometry></visual></link>
+  <link name="drive_FR"><visual><geometry><cylinder radius="0.052" length="0.056"/></geometry></visual></link>
+  <link name="steer_RL"><visual><geometry><box size="0.06 0.06 0.06"/></geometry></visual></link>
+  <link name="drive_RL"><visual><geometry><cylinder radius="0.052" length="0.056"/></geometry></visual></link>
+  <link name="steer_RR"><visual><geometry><box size="0.06 0.06 0.06"/></geometry></visual></link>
+  <link name="drive_RR"><visual><geometry><cylinder radius="0.052" length="0.056"/></geometry></visual></link>
+  <link name="yaw_big"><visual><geometry><box size="0.06 0.06 0.06"/></geometry></visual></link>
+  <link name="yaw_small"><visual><geometry><box size="0.06 0.06 0.06"/></geometry></visual></link>
+  <link name="pitch"><visual><geometry><box size="0.06 0.06 0.06"/></geometry></visual></link>
+  <!-- base_link -> lidar_link is a diagnostic placeholder; NOT HARDWARE CALIBRATED.
+       Replace it with measured real-robot extrinsics before Sim2Real.
+       lidar_link -> imu_link is Mid-360 hardware internal geometry, not the robot mount. -->
+  <link name="lidar_link"/>
+  <link name="imu_link"/>
+  <joint name="steer_FL_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="steer_FL"/>
+    <origin xyz="0.192692451809 -0.177883646112 -0.0511115358104" rpy="1.57079632679 0.00872664639293 3.14159265359"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="drive_FL_joint" type="continuous">
+    <parent link="steer_FL"/>
+    <child link="drive_FL"/>
+    <origin xyz="-6.48725517749e-15 2.62190269495e-15 -0.0361" rpy="1.57079632679 -7.21644966006e-16 2.22626423776"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="steer_FR_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="steer_FR"/>
+    <origin xyz="-0.0750171899769 -0.154904543122 -0.0423323593662" rpy="1.57079632679 3.88578058619e-16 1.95372180397"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="drive_FR_joint" type="continuous">
+    <parent link="steer_FR"/>
+    <child link="drive_FR"/>
+    <origin xyz="-5.3290705182e-17 -5.68434188608e-17 -0.0976086108957" rpy="1.57079632679 -4.99600361081e-16 2.14823930229"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="steer_RL_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="steer_RL"/>
+    <origin xyz="0.191878926823 0.146063646112 -0.051785742938" rpy="1.57079632679 2.22044604925e-16 0.803379316585"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="drive_RL_joint" type="continuous">
+    <parent link="steer_RL"/>
+    <child link="drive_RL"/>
+    <origin xyz="-5.68434188608e-17 6.39488462184e-17 -0.0361" rpy="1.57079632679 9.99200722163e-16 -0.52070669364"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="steer_RR_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="steer_RR"/>
+    <origin xyz="-0.132290856934 0.137685623179 -0.105708534096" rpy="1.57079632679 1.66533453694e-16 1.54550576283"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="drive_RR_joint" type="continuous">
+    <parent link="steer_RR"/>
+    <child link="drive_RR"/>
+    <origin xyz="0.00838070299192 0.0539227911873 -0.0361" rpy="1.57079632679 7.49400541622e-16 -0.455601610543"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="yaw_big_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="yaw_big"/>
+    <origin xyz="0.0840187256347 -0.0432153570248 0.0460931887401" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="yaw_small_joint" type="continuous">
+    <parent link="yaw_big"/>
+    <child link="yaw_small"/>
+    <origin xyz="-0.0490788378834 0.0116935995166 0.17290681126" rpy="1.57079632679 -6.36643515683e-16 -3.12173123709"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="pitch_joint" type="continuous">
+    <parent link="yaw_small"/>
+    <child link="pitch"/>
+    <origin xyz="1.42108547152e-16 0.00605035953151 -0.0171479908146" rpy="0.208428230997 -1.19254312054e-17 6.21892640532e-17"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0.80" rpy="0 0 0"/>
+  </joint>
+  <joint name="imu_joint" type="fixed">
+    <parent link="lidar_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0.011 0.02329 -0.04412" rpy="0 0 0"/>
+  </joint>
+</robot>

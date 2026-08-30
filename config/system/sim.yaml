@@ -1,0 +1,9 @@
+mode: sim
+use_sim_time: true
+namespace: sentry
+policy_backend: mock
+policy_dir: ""
+hardware_transport: mock
+hardware_endpoint: ""
+start_nav2: true
+start_collision_monitor: false

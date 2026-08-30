@@ -4,7 +4,9 @@
       "type": "stdio",
       "command": "uvx",
       "args": [
+        "--from",
         "ros-mcp==3.1.0",
+        "ros-mcp",
         "--transport=stdio"
       ],
       "cwd": "${workspaceFolder}"

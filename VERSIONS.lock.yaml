@@ -1,0 +1,46 @@
+workspace_schema: 1
+generated_at: 2026-08-30
+target:
+  os: Ubuntu 24.04
+  ros: ROS 2 Jazzy
+  rmw: rmw_fastrtps_cpp
+  isaac_sim: 6.x
+  python: ">=3.12 for Isaac Sim 6; ROS Python follows Jazzy packages"
+interfaces:
+  policy_observation_schema: 1
+  policy_observation_dim: 161
+  tactical_action_dim: 10
+  hardware_wire_protocol: 1
+upstreams:
+  RMUC-OfflineRL:
+    url: https://github.com/Harkerbest/RMUC-OfflineRL.git
+    commit: f0d54521caa5b5701665b97f87df309ab2ed8f87
+    license: MIT
+  dp_sdk_core:
+    url: https://github.com/KaminDeng/dp_sdk_core.git
+    commit: 9ba1a81a7bd9b7c7a89baccba7d1f53dbe3d52ee
+    license: MIT
+  point_lio:
+    url: https://github.com/SMBU-PolarBear-Robotics-Team/point_lio.git
+    ref: RM2025_SMBU_auto_sentry
+    commit: e85e79558cf746f6699888a54285fe48b3b0ac71
+    license: BSD-style
+  livox_ros_driver2:
+    url: https://github.com/Livox-SDK/livox_ros_driver2.git
+    ref: master
+    commit: 4a1def929e5b59c7a8122d19fce6efba581ce9f7
+    license: upstream terms
+    patch: dependencies/patches/livox_ros_driver2-sibling-sdk.patch
+  Livox-SDK2:
+    url: https://github.com/Livox-SDK/Livox-SDK2.git
+    ref: master
+    commit: 08f523c930b2f0ba1e98a6afaa8d7476bf479908
+    license: MIT
+assets:
+  isaac_rm:
+    bundled: false
+    import_required: true
+    tested_upstream_version: Isaac Sim 4.1
+  rmuc2024_navigation_map:
+    bundled_from_user_archive: true
+    use: non-commercial technical development
