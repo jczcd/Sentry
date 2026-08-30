@@ -1,0 +1,52 @@
+schema_version: 1
+
+commands:
+  raw_chassis:
+    topic: /cmd_vel
+    type: geometry_msgs/msg/Twist
+    owner: teleop_navigation_or_policy
+  safe_chassis:
+    topic: /sentry/cmd_vel_safe
+    type: geometry_msgs/msg/Twist
+    owner: safety_supervisor_only
+  estop:
+    topic: /sentry/estop
+    type: std_msgs/msg/Bool
+    owner: safety_supervisor_and_authorized_operator
+
+state:
+  clock:
+    topic: /clock
+    type: rosgraph_msgs/msg/Clock
+    simulation_only: true
+  odometry_ground_truth:
+    topic: /sentry/odom
+    type: nav_msgs/msg/Odometry
+    owner_sim: Isaac_Sim
+  odometry_lio:
+    topic: /sentry/lio/odom
+    type: nav_msgs/msg/Odometry
+    owner: LIO
+  joint_states:
+    topic: /joint_states
+    type: sensor_msgs/msg/JointState
+  lidar:
+    topic: /sentry/lidar/points
+    type: sensor_msgs/msg/PointCloud2
+    frame: lidar_link
+    required_fields: [x, y, z, intensity, time]
+    point_time_unit: s
+  imu:
+    topic: /sentry/imu
+    type: sensor_msgs/msg/Imu
+    frame: imu_link
+  scan_debug:
+    topic: /sentry/scan
+    type: sensor_msgs/msg/LaserScan
+    required: false
+
+tf_ownership:
+  odom_to_base_link_sim: Isaac_Sim
+  odom_to_base_link_real: state_estimator
+  base_link_to_robot_links: robot_state_publisher
+  map_to_odom: localization_or_relocalization

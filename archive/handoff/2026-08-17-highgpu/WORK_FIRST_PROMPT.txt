@@ -1,0 +1,46 @@
+这是 RoboMaster Sentinel / Isaac Sim 工程的续接 Work 会话。
+
+请先读取我上传的交接包中的：
+1. PROJECT_HANDOFF.md
+2. CURRENT_TASK.md
+3. NEW_HIGH_GPU_PC_PLAN.md
+4. CODEX_RESUME_PROMPT_HIGH_GPU.txt
+5. references/ 中最新阶段日志（需要时再读）
+
+不要从头重新设计，也不要重复 PHASE A-I2。
+
+重要新增事实：
+【当前这台电脑显卡配置很高。】
+因此旧机器上测到的 RTF≈0.3、RTX/IMU性能瓶颈不能直接当成本机事实。
+先重新做当前机器的硬件与性能 baseline，再决定是否需要优化。
+
+当前真实状态：
+- PHASE A-I2 PASS
+- PHASE J Point-LIO 未完成
+- PHASE J1 GUI baseline PASS
+- GUI 已人工打开成功
+- 手工解除 /sentry/estop 后机器人已经可以运动
+- 当前人工反馈：能动，但反应有点慢
+- 下一重点：GUI latency/RTF 诊断 + Small Point-LIO
+
+优先参考：
+https://github.com/Yancey2023/small_point_lio.git
+https://github.com/SMBU-PolarBear-Robotics-Team/pb2025_sentry_nav.git
+https://github.com/SMBU-PolarBear-Robotics-Team/pb2025_sentry_ws.git
+
+工作原则：
+- Work 负责整体架构、分析、阶段设计和验收
+- Codex 负责 Ubuntu 本地仓库改代码与运行测试
+- 不自动清理 dirty git worktree
+- 不覆盖 Stage5C
+- 不直接进入 Nav2 / terrain / RL
+- 不把仿真参数称为实车标定值
+
+请先输出：
+A. 你理解的当前工程状态
+B. 当前高性能电脑需要重新测量而不能继承旧值的项目
+C. GUI“反应慢”的最小诊断计划
+D. Small Point-LIO 接入计划
+E. 哪些阶段绝对不要重做
+
+先不要生成大量代码。

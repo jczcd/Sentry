@@ -1,0 +1,426 @@
+DAY NEXT / HIGH-GPU PC RESUME
+
+这是 RoboMaster Sentinel 工程在高性能电脑上的续接工作。
+不要重做 PHASE A-I2，不要直接进入 Nav2。
+
+============================================================
+第一原则
+============================================================
+
+先恢复工程和重新测量本机性能。
+
+旧电脑的：
+RTF≈0.3
+GPU瓶颈
+LiDAR wall rate
+IMU wall rate
+
+全部只能作为历史参考。
+
+这台电脑显卡配置很高，
+必须重新实测，不得复制旧性能结论。
+
+============================================================
+先读取
+============================================================
+
+AGENTS.md
+PROJECT_STATE.md
+docs/ISAAC_GUI_VALIDATION.md
+docs/MID360_SIM_CONTRACT.md
+isaac_sim/topic_contract.yaml
+tools/integration/sentinel_env.sh
+tools/integration/run_sentinel_gui.sh
+tools/integration/sentry_teleop.py
+tools/integration/sentinel_gui_status.sh
+
+以及当前 git status / diff --check。
+
+禁止：
+git reset
+git restore
+git clean
+git stash
+git commit
+git push
+
+保护：
+tools/ubuntu/bootstrap_jazzy.sh
+tools/ubuntu/build.sh
+Stage5C
+
+============================================================
+STEP 0：硬件报告
+============================================================
+
+只读执行并记录：
+
+uname -a
+cat /etc/os-release
+lscpu
+free -h
+nvidia-smi
+nvidia-smi --query-gpu=name,driver_version,memory.total,memory.free,utilization.gpu,power.limit --format=csv
+lsblk
+df -h
+
+确认：
+GPU_MODEL=
+GPU_VRAM=
+DRIVER=
+CPU=
+RAM=
+ISAAC_VERSION=
+ROS_DISTRO=
+ROS_DOMAIN_ID=
+RMW_IMPLEMENTATION=
+
+不要假定本机仍是旧 RTX 4060。
+
+============================================================
+STEP 1：工程恢复
+============================================================
+
+source tools/integration/sentinel_env.sh
+
+确认 Stage5C SHA：
+ffa8ecbf83a047f05cc1e4aeb3005b1fa8c09da651c273bb4a4d03a62a0dcacc
+
+确认 Stage5D 存在。
+
+check_urdf PASS。
+
+先不要重跑全部历史测试。
+
+============================================================
+STEP 2：GUI 已知修复检查
+============================================================
+
+检查 sentry_teleop.py：
+
+def run(screen):
+    nonlocal active
+
+必须存在。
+
+如果缺失：
+只做这个最小修复。
+
+检查 run_sentinel_gui.sh。
+
+当前 GUI 曾经需要人工：
+
+ros2 topic pub --once /sentry/estop std_msgs/msg/Bool '{data: false}'
+
+机器人才能运动。
+
+请把“仿真 GUI readiness 后安全解除 estop”正规化：
+- 仅 GUI simulation mode
+- safety_supervisor 已 ready 后执行
+- 明确日志输出
+- 不删除 estop topic
+- 不绕过 safety supervisor
+- 退出仍发 zero cmd
+
+============================================================
+STEP 3：GUI latency / RTF benchmark
+============================================================
+
+目标：
+解释人工反馈“机器人能动，但反应有点慢”。
+
+不要先改：
+swerve IK
+friction
+drive gain
+Stage5D physics
+
+增加轻量 benchmark 工具：
+tools/integration/gui_performance_audit.py/.sh
+
+分别测试至少：
+
+PROFILE A:
+Stage5D + control/state，尽可能不启用重传感器 debug
+
+PROFILE B:
+正常 sensors，无 viewport debug draw
+
+PROFILE C:
+diagnostic + RTX debug draw
+
+对于每个 profile 记录：
+
+wall_elapsed_s
+simulation_elapsed_s
+RTF
+
+GPU utilization
+VRAM used
+CPU utilization（可用合理系统采样）
+
+/cmd_vel publish timestamp
+/sentry/cmd_vel_safe receive timestamp
+command pipeline latency
+
+/sentry/odom response onset
+
+LiDAR sim-time rate
+IMU unique sim-time rate
+
+不要因为高 GPU 就预设 RTF=1。
+
+============================================================
+Teleop 人工体验 baseline
+============================================================
+
+默认建议：
+--timeout 0.6
+
+保留：
+linear 0.12
+angular 0.35
+
+可提供用户可调参数。
+
+不要超过 safety limits。
+
+============================================================
+STEP 4：决定 GUI 慢的根因
+============================================================
+
+按 evidence 分类：
+
+INPUT_LATENCY
+SAFETY_LATENCY
+CONTROLLER_LATENCY
+LOW_RTF
+RTX_GPU_LOAD
+CPU_BOUND
+UNKNOWN
+
+输出真实数据。
+
+只有明确是 chassis dynamics 问题，
+才允许之后另开阶段调 drive/steer dynamics。
+
+============================================================
+STEP 5：Small Point-LIO source audit
+============================================================
+
+研究：
+https://github.com/Yancey2023/small_point_lio.git
+
+不要只看 README。
+
+检查实际：
+branch
+commit
+package
+CMakeLists
+ROS2 node
+adapters
+config
+topic names
+TF broadcaster
+odom publisher
+cloud_registered publisher
+timestamp parsing
+IMU handling
+extrinsic semantics
+
+重点确认：
+
+SMALL_POINT_LIO_BRANCH=
+COMMIT=
+PACKAGE=
+EXECUTABLE=
+
+ADAPTERS=
+
+LIVOX_POINTCLOUD2_INPUT_SCHEMA=
+
+TIME_FIELD=
+TIME_UNIT=
+
+IMU_TOPIC_CONFIG=
+
+DEFAULT_ODOM_TOPIC=
+DEFAULT_REGISTERED_CLOUD_TOPIC=
+
+DEFAULT_TF_EDGE=
+
+CAN_DISABLE_TF=
+YES/NO
+
+============================================================
+STEP 6：优先匹配当前 Isaac contract
+============================================================
+
+当前：
+/sentry/lidar/points
+sensor_msgs/msg/PointCloud2
+fields:
+x y z intensity time
+
+/sentry/imu
+sensor_msgs/msg/Imu
+
+优先尝试 Small Point-LIO 的：
+livox_pointcloud2 adapter
+
+不要继续无理由伪装 VELO16。
+
+如果 schema 不完全一致：
+做最小、语义正确 adapter。
+
+禁止伪造：
+ring
+time
+fake samples
+
+============================================================
+TF ownership
+============================================================
+
+必须保持：
+
+/sentry/odom
+=
+Isaac ground truth
+
+Small Point-LIO：
+/sentry/lio/odom
+
+registered：
+/sentry/lio/cloud_registered
+
+禁止 Small Point-LIO 再广播：
+odom → base_link
+
+如果 upstream 可配置：
+关闭。
+
+否则做最小 compatibility patch 或独立 lio frames。
+
+TF：
+no cycle
+no duplicate parent
+
+============================================================
+外参
+============================================================
+
+使用已验证：
+
+extrinsic_T =
+[-0.01100, -0.02329, +0.04412]
+
+extrinsic_R =
+identity
+
+仅代表：
+Mid-360 LiDAR pose in IMU frame。
+
+base_link → lidar_link：
+仍 NOT HARDWARE CALIBRATED。
+
+============================================================
+STEP 7：高性能电脑 benchmark Small Point-LIO
+============================================================
+
+如果能构建运行：
+
+测试：
+Stationary
+Straight
+Lateral
+Rotate
+Combined Omni
+
+比较：
+/sentry/odom (GT)
+/sentry/lio/odom (estimate)
+
+记录：
+translation error
+yaw error
+CPU
+GPU
+RTF
+LIO output rate
+registered cloud rate
+
+不要直接相信作者 2~3x 性能声明。
+在本机测。
+
+============================================================
+STEP 8：对比 PolarBear Point-LIO
+============================================================
+
+只有 Small Point-LIO 先跑通后再决定是否需要完整对比。
+
+维度：
+build complexity
+dependencies
+CPU usage
+RTF
+output frequency
+GT error
+timestamp compatibility
+Mid-360 adapter cleanliness
+TF integration complexity
+
+最后推荐正式 baseline。
+
+============================================================
+不要进入
+============================================================
+
+terrain_analysis
+small_gicp
+Nav2
+SLAM
+Behavior Tree
+RL
+
+============================================================
+最终输出
+============================================================
+
+HIGH GPU PC RESUME:
+PASS/FAIL
+
+Hardware:
+...
+
+GUI latency root cause:
+...
+
+RTF profiles:
+A=
+B=
+C=
+
+Teleop:
+PASS/FAIL
+
+GUI estop auto-enable:
+PASS/FAIL
+
+Small Point-LIO audit:
+...
+
+Small Point-LIO runtime:
+PASS/FAIL/NOT STARTED
+
+GT vs LIO:
+...
+
+Recommended LIO baseline:
+Small Point-LIO / PolarBear Point-LIO / UNDECIDED
+
+READY_FOR_NEXT:
+YES/NO
+
+完成后停止，不进入 Nav2。

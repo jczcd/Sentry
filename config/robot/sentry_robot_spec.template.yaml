@@ -1,0 +1,69 @@
+schema_version: 1
+status: NEEDS_HARDWARE_MEASUREMENT
+
+conventions:
+  standard: ROS_REP_103
+  base_frame: base_link
+  x_positive: forward
+  y_positive: left
+  z_positive: up
+  yaw_positive: counterclockwise_from_above
+  linear_unit: m
+  angular_unit: rad
+
+chassis:
+  type: four_module_swerve
+  wheel_radius_m: null
+  max_wheel_radps: null
+  modules:
+    - id: front_left
+      x_m: null
+      y_m: null
+      steer_joint: steer_front_left
+      drive_joint: drive_front_left
+    - id: front_right
+      x_m: null
+      y_m: null
+      steer_joint: steer_front_right
+      drive_joint: drive_front_right
+    - id: rear_left
+      x_m: null
+      y_m: null
+      steer_joint: steer_rear_left
+      drive_joint: drive_rear_left
+    - id: rear_right
+      x_m: null
+      y_m: null
+      steer_joint: steer_rear_right
+      drive_joint: drive_rear_right
+
+actuators:
+  expected_revolute_dof: 11
+  gimbal_joints:
+    - yaw_big
+    - yaw_small
+    - pitch
+  motor_ids: NEEDS_ASSIGNMENT
+  drive_reduction: null
+  steer_reduction: null
+  encoder_directions: NEEDS_CALIBRATION
+  steering_zero_offsets_rad: NEEDS_CALIBRATION
+
+diagnostic_limits_only:
+  max_abs_vx_mps: 0.20
+  max_abs_vy_mps: 0.20
+  max_abs_wz_radps: 0.60
+  command_timeout_s: 0.50
+  note: Historical simulation values; not approved as final real-robot limits.
+
+sensors:
+  lidar:
+    model: Livox Mid-360
+    frame: lidar_link
+    topic: /sentry/lidar/points
+    base_to_lidar: NEEDS_HARDWARE_CALIBRATION
+  imu:
+    frame: imu_link
+    topic: /sentry/imu
+    lidar_to_imu_translation_m: [-0.01100, -0.02329, 0.04412]
+    lidar_to_imu_rotation: identity_candidate_needs_verification

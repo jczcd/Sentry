@@ -1,0 +1,13 @@
+{
+  "servers": {
+    "rosMcp": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "ros-mcp==3.1.0",
+        "--transport=stdio"
+      ],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

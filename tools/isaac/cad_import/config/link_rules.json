@@ -1,0 +1,25 @@
+{
+  "robot": "Sentry",
+  "notes": "Semantic names detected directly in the supplied STEP PRODUCT records.",
+  "links": {
+    "base_link": ["base_link"],
+    "steer_FL": ["steer_FL_link", "steer_FL_link_M3508 Ver"],
+    "drive_FL": ["drive_FL_link"],
+    "steer_FR": ["steer_FR_link", "steer_FR_link_M3508 Ver"],
+    "drive_FR": ["drive_FR_link"],
+    "steer_RL": ["steer_RL-link", "steer_RL-link_M3508 Ver"],
+    "drive_RL": ["drive_RL_link"],
+    "steer_RR": ["steer_RR_link", "steer_RR_link_M3508 Ver"],
+    "drive_RR": ["drive_RR_link"],
+    "yaw_big": ["yaw1_link"],
+    "yaw_small": ["yaw2_link"],
+    "yaw_3_or_pitch_stage": ["yaw_3link"],
+    "pitch_candidates": ["pitch"]
+  },
+  "keep_independent_dof": [
+    "steer_FL", "drive_FL", "steer_FR", "drive_FR",
+    "steer_RL", "drive_RL", "steer_RR", "drive_RR",
+    "yaw_big", "yaw_small", "yaw_3_or_pitch_stage"
+  ],
+  "merge_policy": "Only merge geometry that has no relative motion with respect to its semantic link. Do not merge across the independent DOF list."
+}

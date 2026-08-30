@@ -1,0 +1,107 @@
+{
+  "_note": "Stage5D first on-ground swerve baseline. Friction, drive gains and speeds are diagnostic values, not final RoboMaster dynamics/controller parameters.",
+  "input_stage": "output/Sentry_stage5c_joint_drives.usda",
+  "output_stage": "output/Sentry_stage5d_swerve.usda",
+  "stage4_report": "output/stage4_report.json",
+  "stage5b_preflight": "output/stage5b_preflight.json",
+  "runtime_report": "output/stage5d_runtime_report.json",
+  "articulation_root": "/Sentry/Sentry_raw/base_link",
+  "physics_scene": "/PhysicsScene_Stage4Debug",
+  "ground_path": "/Stage5B_Ground",
+  "modules": {
+    "FL": {
+      "steer_joint": "steer_FL_joint",
+      "drive_joint": "drive_FL_joint",
+      "steer_link_key": "steer_FL",
+      "drive_link_key": "drive_FL"
+    },
+    "FR": {
+      "steer_joint": "steer_FR_joint",
+      "drive_joint": "drive_FR_joint",
+      "steer_link_key": "steer_FR",
+      "drive_link_key": "drive_FR"
+    },
+    "RL": {
+      "steer_joint": "steer_RL_joint",
+      "drive_joint": "drive_RL_joint",
+      "steer_link_key": "steer_RL",
+      "drive_link_key": "drive_RL"
+    },
+    "RR": {
+      "steer_joint": "steer_RR_joint",
+      "drive_joint": "drive_RR_joint",
+      "steer_link_key": "steer_RR",
+      "drive_link_key": "drive_RR"
+    }
+  },
+  "physics_material": {
+    "path": "/Stage5D_PhysicsMaterials/TireGround",
+    "static_friction": 0.65,
+    "dynamic_friction": 0.55,
+    "restitution": 0.0
+  },
+  "drive_gains": {
+    "steer": {
+      "stiffness": 250.0,
+      "damping": 35.0,
+      "max_force": 1000000.0
+    },
+    "wheel": {
+      "stiffness": 0.0,
+      "damping": 15.0,
+      "max_force": 1000000.0
+    }
+  },
+  "calibration": {
+    "steer_probe_deg": 10.0,
+    "settle_frames": 50,
+    "probe_frames": 60,
+    "minimum_heading_change_deg": 3.0
+  },
+  "runtime": {
+    "ground_settle_frames": 180,
+    "steer_settle_frames": 120,
+    "motion_frames": 150,
+    "stop_frames": 75,
+    "max_steer_error_deg": 12.0
+  },
+  "tests": [
+    {
+      "name": "straight",
+      "vx_m_s": 0.12,
+      "vy_m_s": 0.0,
+      "wz_rad_s": 0.0
+    },
+    {
+      "name": "lateral",
+      "vx_m_s": 0.0,
+      "vy_m_s": 0.12,
+      "wz_rad_s": 0.0
+    },
+    {
+      "name": "diagonal",
+      "vx_m_s": 0.09,
+      "vy_m_s": 0.09,
+      "wz_rad_s": 0.0
+    },
+    {
+      "name": "rotate",
+      "vx_m_s": 0.0,
+      "vy_m_s": 0.0,
+      "wz_rad_s": 0.35
+    }
+  ],
+  "acceptance": {
+    "straight_min_forward_m": 0.04,
+    "straight_max_lateral_ratio": 0.65,
+    "straight_max_abs_yaw_deg": 20.0,
+    "lateral_min_lateral_m": 0.04,
+    "lateral_max_forward_ratio": 0.65,
+    "lateral_max_abs_yaw_deg": 20.0,
+    "diagonal_min_forward_m": 0.025,
+    "diagonal_min_lateral_m": 0.025,
+    "diagonal_max_abs_yaw_deg": 25.0,
+    "rotate_min_abs_yaw_deg": 8.0,
+    "rotate_max_translation_m": 0.18
+  }
+}

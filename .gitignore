@@ -1,0 +1,68 @@
+# Build products
+build/
+install/
+log/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+CTestTestfile.cmake
+Testing/
+
+# ROS and recorded data
+*.bag
+*.bag.active
+*.db3
+*.mcap
+rosbag2_*/
+
+# Python and editor state
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.idea/
+*.swp
+*~
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# Runtime output and crash artifacts
+*.log
+*.core
+core.*
+crashdump*/
+**/output/*
+!**/output/.gitkeep
+**/logs/*
+!**/logs/.gitkeep
+
+# Large source, simulation, and transfer artifacts
+*.STEP
+*.step
+*.stp
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+*.usdc
+*.usdz
+*.blend
+
+# Isaac and NVIDIA caches
+isaac-sim/
+issac-sim/
+_build/
+cache/
+kit/cache/
+ov/

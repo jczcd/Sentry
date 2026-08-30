@@ -1,0 +1,35 @@
+{
+  "folders": [
+    {
+      "name": "Sentry",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "cmake.sourceDirectory": "${workspaceFolder}",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureOnOpen": false,
+    "files.exclude": {
+      "**/__pycache__": true,
+      "**/.pytest_cache": true,
+      "build": true,
+      "install": true,
+      "log": true
+    },
+    "python.analysis.extraPaths": [
+      "${workspaceFolder}/tools"
+    ],
+    "terminal.integrated.env.linux": {
+      "SENTINEL_ROOT": "${workspaceFolder}",
+      "ROS_DOMAIN_ID": "0"
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-vscode.cpptools",
+      "ms-vscode.cmake-tools",
+      "ms-python.python",
+      "github.copilot-chat"
+    ]
+  }
+}

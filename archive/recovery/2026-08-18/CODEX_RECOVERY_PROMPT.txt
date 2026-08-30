@@ -1,0 +1,25 @@
+这是 Sentinel / Isaac Sim 工程的受控恢复会话。原电脑实时工作区已经不可用，当前目录是能找回的全部资料，而不是原工程完整镜像。
+
+当前机器：Ubuntu 22.04.4、RTX 4090 24GB、NVIDIA 580.173.02、Isaac Sim 6.0.0-rc.59。原项目基线：Ubuntu 24.04、ROS 2 Jazzy、Isaac Sim 6.0.1。
+
+第一轮禁止修改文件。请只读完成：
+
+1. 阅读 README_RECOVERY.md。
+2. 审计 01_cad_source、02_stage5d_builder、03_handoff 和 04_migration_toolkit。
+3. 输出精确文件清单，区分“真实存在的资产”“历史记录中的文件”“目前缺失的关键文件”。
+4. 检查本机 Isaac Sim、Python、GPU、磁盘、CMake、ROS 2、colcon、Docker和Codex环境。
+5. 判断 Isaac Sim 6.0.1 是否应在独立目录并行安装；不要删除或覆盖当前6.0.0。
+6. 制定从 Sentry.step 恢复到 Stage5C、再到 Stage5D 4/4的分阶段计划，每阶段必须有输入、输出、验证和停止条件。
+
+强制约束：
+
+- 不得声称原 Stage5C 或 Stage5D 已恢复；它们的成品文件目前缺失。
+- 历史 Stage5C SHA256 `ffa8ecbf83a047f05cc1e4aeb3005b1fa8c09da651c273bb4a4d03a62a0dcacc` 仅作为原文件身份记录。
+- 不猜测关节轴、原点、限位、质量或惯量；必须从可验证证据逐项恢复。
+- 不覆盖原始 Sentry.step。
+- 不运行 git reset、git restore、git clean、git checkout --、git stash、git commit或git push。
+- 不把整场 PhysX 设置为200Hz。
+- 暂不进入 terrain、Nav2或 tactical RL。
+- Small Point-LIO 延后到新 Stage5D、GUI、Mid-360 contract 重新验证之后。
+
+第一轮输出后停止，等待人工批准再创建新的恢复工作区或修改任何文件。

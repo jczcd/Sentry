@@ -1,0 +1,45 @@
+{
+  "package": "Sentinel_Migration_4090_20260818",
+  "created": "2026-08-18",
+  "purpose": "Build, verify, restore, and resume the current Sentinel project on an RTX 4090 cloud VM",
+  "project_baseline": {
+    "ubuntu": "24.04",
+    "ros": "Jazzy",
+    "isaac_sim": "6.0.1"
+  },
+  "target_host_observed": {
+    "ubuntu": "22.04",
+    "gpu": "NVIDIA GeForce RTX 4090"
+  },
+  "protected_stage5c_sha256": "ffa8ecbf83a047f05cc1e4aeb3005b1fa8c09da651c273bb4a4d03a62a0dcacc",
+  "toolkit_contains_live_project_snapshot": false,
+  "live_project_archive_is_created_by": "pack_sentinel_full.sh",
+  "archive_format": "tar.gz",
+  "archive_includes": [
+    "SentinelWorkspace/workspace including dirty Git worktree and source dependencies",
+    "sentinelusd/Sentry_IsaacSim_Linux including Stage5C and Stage5D",
+    "migration metadata and Codex handoff"
+  ],
+  "archive_excludes": [
+    "Isaac Sim installation binaries",
+    "ros2_ws/build",
+    "ros2_ws/install",
+    "ros2_ws/log",
+    "runtime caches",
+    "virtual environments",
+    "node_modules",
+    "core dumps"
+  ],
+  "files": [
+    "README_FIRST.md",
+    "pack_sentinel_full.sh",
+    "verify_sentinel_archive.sh",
+    "restore_sentinel_full.sh",
+    "check_4090_host.sh",
+    "PROJECT_HANDOFF.md",
+    "NEXT_STEPS_4090.md",
+    "AGENTS_SENTINEL_4090.md",
+    "CODEX_FIRST_PROMPT.txt",
+    "MANIFEST.json"
+  ]
+}

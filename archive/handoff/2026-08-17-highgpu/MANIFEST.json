@@ -1,0 +1,82 @@
+[
+  {
+    "path": "CODEX_RESUME_PROMPT_HIGH_GPU.txt",
+    "size": 7834,
+    "sha256": "71f189787781fc037ace05e9be369cad2c6423e6b8d98fccd41add770dab1045"
+  },
+  {
+    "path": "CURRENT_TASK.md",
+    "size": 634,
+    "sha256": "52452ab33d7508e590f0df29f7cd6ddcdc1e785fcf2c49702129343d749a2c88"
+  },
+  {
+    "path": "HOW_TO_CREATE_REAL_PROJECT_ZIP.md",
+    "size": 1159,
+    "sha256": "dd7db149ad8a4ce30f2dd4cff844120f121f2afc069919f2314d982664b6bad3"
+  },
+  {
+    "path": "NEW_HIGH_GPU_PC_PLAN.md",
+    "size": 722,
+    "sha256": "fe3015a4cf5c4f1b20a39dc3af8d061fc1359f2fe3114c02543794f71a334281"
+  },
+  {
+    "path": "PROJECT_HANDOFF.md",
+    "size": 8390,
+    "sha256": "2e2135584920efa114518043dda9c7e07b418675a57a9ae1e7939b631c7a90f7"
+  },
+  {
+    "path": "README_FIRST.md",
+    "size": 996,
+    "sha256": "8ad16cfd3b618a3877d6af806a319adaaf2e5d75170c39025e1e063e3b202bf7"
+  },
+  {
+    "path": "WORK_FIRST_PROMPT.txt",
+    "size": 1621,
+    "sha256": "563040821477923e0297dc09158d99fe22ef20abd2b9ea80c5ac6b196ed7f923"
+  },
+  {
+    "path": "make_real_full_project_zip.sh",
+    "size": 1843,
+    "sha256": "f0757f83e364ee546235f4fcecb573448ef02d16422e275a4b161a2a9d61bb54"
+  },
+  {
+    "path": "references/281f180a-10ba-4b9d-9303-d3937b35db37.png",
+    "size": 304797,
+    "sha256": "faef18ce9a12fc871de4df7e0247048698dc45f9fe5ee56edd182cf9c4b92bd0"
+  },
+  {
+    "path": "references/88d777c9-6e75-4444-9df7-77afec3631ee.png",
+    "size": 988322,
+    "sha256": "dda173064031b7e3e7f87c5766d11e0f0878dca166d8b324802feeae466c6d5b"
+  },
+  {
+    "path": "references/Livox_Mid-360_Quick_Start_Guide_multi.pdf",
+    "size": 4663761,
+    "sha256": "199f729e4861707e486417f43eb9774751bce1c6ca19f01db0fda7233d5d1aee"
+  },
+  {
+    "path": "references/Livox_Mid-360_User_Manual_EN.pdf",
+    "size": 1926442,
+    "sha256": "3f202c845330023d50eee086cc522918ec8b1279446c4286ea3d38722400cab2"
+  },
+  {
+    "path": "references/粘贴的文本 (1)(20260815-065109).txt",
+    "size": 54573,
+    "sha256": "6c290ba71981da744ad41359cb36fb6fe11eb9c75e39df8c329436c615570b14"
+  },
+  {
+    "path": "references/粘贴的文本 (1)(20260815-075737).txt",
+    "size": 52720,
+    "sha256": "62fd3b47c4b63e93f1034fc234caa360e75486989277851b0b1a6744913cadf8"
+  },
+  {
+    "path": "references/粘贴的文本 (1)(20260815-084002).txt",
+    "size": 40208,
+    "sha256": "6ee8acd5d4dd966f8bb4160113283ed2d72b34eb2e583b293ce12928b85013c5"
+  },
+  {
+    "path": "references/粘贴的文本 (1)(20260815-091713).txt",
+    "size": 44236,
+    "sha256": "bb76df31f2135aa1c79825a831cd4cffb27429b135f61ab1d668a8422b9367f5"
+  }
+]
