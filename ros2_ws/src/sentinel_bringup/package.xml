@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>sentinel_bringup</name>
+  <version>0.1.0</version>
+  <description>System launch entry points for simulation, HIL and real Sentinel modes.</description>
+  <maintainer email="maintainer@example.com">Sentinel Maintainer</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>sentinel_core</exec_depend>
+  <exec_depend>sentinel_description</exec_depend>
+  <exec_depend>sentinel_interfaces</exec_depend>
+  <exec_depend>sentinel_navigation</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

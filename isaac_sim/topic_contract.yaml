@@ -1,0 +1,60 @@
+schema_version: 1
+namespace: /sentry
+frames:
+  global: map
+  local: odom
+  base: base_link
+  lidar: lidar_link
+  imu: imu_link
+  camera: camera_optical_frame
+ros_to_sim:
+  - topic: /sentry/cmd_vel_safe
+    type: geometry_msgs/msg/Twist
+    rate_hz: 100
+    qos: reliable
+    owner: safety_supervisor
+sim_to_ros:
+  - topic: /clock
+    type: rosgraph_msgs/msg/Clock
+    rate_hz: 100
+    qos: best_effort
+  - topic: /sentry/odom
+    type: nav_msgs/msg/Odometry
+    rate_hz: 100
+    qos: best_effort
+  - topic: /tf
+    type: tf2_msgs/msg/TFMessage
+    rate_hz: 100
+    qos: best_effort
+  - topic: /tf_static
+    type: tf2_msgs/msg/TFMessage
+    rate_hz: 1
+    qos: transient_local
+  - topic: /sentry/scan
+    type: sensor_msgs/msg/LaserScan
+    rate_hz: 15
+    qos: sensor_data
+    role: AUXILIARY_2D
+    source: Isaac RTX LaserScan helper
+  - topic: /sentry/lidar/points
+    type: sensor_msgs/msg/PointCloud2
+    rate_hz: 10
+    qos: sensor_data
+    role: PRIMARY_LIDAR_DATA
+    fields: [x, y, z, intensity, time]
+    point_time_unit: seconds
+    point_time_source: NATIVE_ISAAC
+  - topic: /sentry/imu
+    type: sensor_msgs/msg/Imu
+    rate_hz: 50
+    qos: sensor_data
+    role: PRIMARY_IMU_DATA
+  - topic: /sentry/camera/image_raw
+    type: sensor_msgs/msg/Image
+    rate_hz: 30
+    qos: sensor_data
+invariants:
+  - only safety_supervisor may command the plant
+  - simulation and ROS use the same ROS_DOMAIN_ID
+  - base_link uses REP-103 axes
+  - policy decisions run at 1 Hz; plant control runs at 100 Hz or faster

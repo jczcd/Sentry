@@ -1,57 +1,77 @@
-# Sentinel project state
+# Sentinel 当前项目状态
 
-Consolidated: 2026-08-30
+更新时间：2026-08-30
 
-## Executive status
+## 结论
 
-| Area | Current status | Meaning |
+`workspace.zip` 已恢复、校验并合并到本仓库。恢复来源是用户原工作区的源码快照，
+不是单独的 USD 资产项目。压缩包 SHA256：
+`118276849edf3fe0920c8d6addfca4eb8b1b73e867a50d17a78a9472519a0cc2`。
+
+当前仓库已具备一套可继续开发的工作区和接口骨架，但不能把压缩包里的历史日志或
+旧机器上的 PASS 结论当成当前运行验收。
+
+## 现状表
+
+| 范围 | 当前状态 | 说明 |
 |---|---|---|
-| Repository | `INITIAL_CONSOLIDATION` | Historical assets and the Phase 1 shared core are now collected in one repository. |
-| Canonical CAD source | `ARCHIVE_VERIFIED_NOT_COMMITTED` | The source ZIP and embedded STEP pass integrity checks, but exceed normal Git limits. |
-| Model V2 | `INVALID_VISUAL_ASSEMBLY` | The earlier all-PASS conclusion was withdrawn after human GUI inspection found an exploded/radial assembly. |
-| Model V3 raw candidate | `MANUAL_VISUAL_APPROVAL_REQUIRED` | Independent OCCT/XDE evidence selected HOOPS Variant A with `globalXforms=false`; human Isaac review is still required. |
-| Current Stage5C/Stage5D | `NOT_RECOVERED_IN_THIS_REPOSITORY` | No current valid Stage5C/Stage5D USD or runtime report is present here. |
-| Historical Stage5D | `HISTORICAL_ONLY` | Straight/lateral/diagonal/rotate were reported 4/4 PASS on an older baseline; this is not current Gate evidence. |
-| Swerve common core | `HOST_TESTABLE` | C++17 IK/FK, steering optimization, zero hold, and saturation are present. Hardware geometry remains unmeasured. |
-| ROS/Isaac integration | `CONTRACT_ONLY` | Interfaces and ownership are documented; the full live workspace was not available to commit. |
-| STM32 integration | `DESIGN_ONLY` | The MCU boundary, state machine, watchdog, and protocol are specified but firmware is not yet implemented here. |
+| ROS 2 源码 | 已恢复 | 五个 ROS 包、启动文件、消息/服务、Mock 节点已纳入 |
+| 共享运动学 | 已存在 | `sentinel_common` 的 C++17 四舵轮核心和主机测试保留 |
+| STM32 协议 | 已恢复 | `firmware/protocol` 提供 C11 编解码；真实电机闭环仍需硬件接入 |
+| Isaac 适配 | 已恢复/待验收 | 脚本和传感器契约纳入；必须显式提供已批准 USD |
+| Nav2/Point-LIO | 下游骨架 | 依赖安装、真实 TF/传感器和运行验证尚未在本环境重跑 |
+| 离线 RL | 契约已恢复 | RMUC-OfflineRL 按固定 commit 外置获取，不把第三方工作树提交进来 |
+| V2 模型 | 失效 | 视觉结论已撤销，禁止用于运动或训练 |
+| V3 Variant A | 待人工确认 | `globalXforms=false` 仅有自动取证，必须在 Isaac GUI 复核 |
 
-## Latest trustworthy model decision
+## 固定接口
 
-The latest recovered transcript, dated 2026-08-22, records:
+```text
+高层来源（Nav2 / 遥控 / 策略）
+        ↓
+全局 /cmd_vel 或 /cmd_vel_teleop
+        ↓
+safety_supervisor（限速、超时、急停、硬件看门狗）
+        ↓
+唯一安全速度 /sentry/cmd_vel_safe
+        ├── 仿真：Isaac 虚拟下位机
+        └── 实车：hardware_bridge → USB CDC/UDP → STM32 → CAN/PWM
+```
 
-- canonical STEP SHA256: `e4ffba09af148210483a0ef586b8a0332cb9ac472b8747fb6191a5fd29e97eac`;
-- one root product and 136 assembly occurrences validated independently with OpenCascade/XDE;
-- HOOPS Variant A, `globalXforms=false`: `PASS_RECOMMENDED_RAW_CANDIDATE`;
-- HOOPS Variant B, `globalXforms=true`: `FAIL_EXPLODED_VISUAL_ASSEMBLY`;
-- recommended raw V3 USD SHA256: `3d60faa31c2b183ce260a563575bf57e6707aeb7e34889bceb956f4880fffc67`;
-- final state: `MANUAL_VISUAL_APPROVAL_REQUIRED`.
+MCP 只用于开发、诊断和高层任务编排，不进入 100–1000 Hz 实时控制环，也不得直接
+发布安全速度、电机电流、PWM 或 CAN 帧。
 
-The actual V3 scripts, reports, screenshots, and USD were not present in the available workspace snapshot. Their known names are preserved in `docs/history/TIMELINE.md`; do not invent or regenerate them without the original source or a new evidence run.
+标准 TF 总线为全局 `/tf`、`/tf_static`；仿真时钟为全局 `/clock`。完整列表见
+[`docs/TOPIC_CONTRACT.md`](docs/TOPIC_CONTRACT.md) 和机器可读的
+[`config/interfaces/ros_topics.yaml`](config/interfaces/ros_topics.yaml)。
 
-## Historical checkpoint that must not be confused with current state
+## 导入范围
 
-An earlier project handoff records:
+已纳入：
 
-- 11 revolute DOF: four steer, four drive, `yaw_big`, `yaw_small`, `pitch`;
-- articulation root `/Sentry/Sentry_raw/base_link` under wrapper `/Sentry`;
-- historical Stage5C SHA256 `ffa8ecbf83a047f05cc1e4aeb3005b1fa8c09da651c273bb4a4d03a62a0dcacc`;
-- historical Stage5D straight/lateral/diagonal/rotate 4/4 PASS;
-- command limits `|vx| <= 0.20 m/s`, `|vy| <= 0.20 m/s`, `|wz| <= 0.60 rad/s` and command timeout `0.5 s` used as a diagnostic baseline;
-- `/sentry/odom`, `/tf`, and `/joint_states` reported around 50 Hz;
-- a deferred `/tf_static` issue caused by dual-parent proposals for `base_link`.
+- `ros2_ws/src/{sentinel_bringup,sentinel_core,sentinel_description,sentinel_interfaces,sentinel_navigation}`；
+- `isaac_sim` 的脚本、配置和话题契约；
+- `training` 的接口、任务配置和运行器；
+- `firmware/protocol`、配置、测试、Windows/Ubuntu/集成工具；
+- 原工作区文档与来源说明。
 
-These facts remain useful for reconstruction, but the later visual invalidation means they cannot certify the current model.
+未纳入：
 
-## Current blockers
+- `ros2_ws/build`、`install`、`log`、Python 缓存和运行日志；
+- 第三方完整 Git 工作树；
+- 约 424 MB STEP、Isaac 安装包和未批准 USD。
 
-1. Open the exact V3 Variant A candidate in Isaac Sim and record explicit human visual approval or rejection.
-2. Recover the latest V3 source scripts/reports from the original machine, if still available.
-3. Measure physical swerve geometry, wheel radius, gear ratios, encoder directions, and steering zeros.
-4. Recreate a valid semantic-link and articulation baseline only after visual approval.
-5. Re-run Stage5C drive tests and Stage5D 4/4 tests on the newly accepted model.
-6. Implement and verify the ROS virtual lower controller and real hardware bridge against the same interface.
+第三方依赖的 URL、commit、许可证和补丁见 [`VERSIONS.lock.yaml`](VERSIONS.lock.yaml)
+与 [`dependencies/README.md`](dependencies/README.md)。
 
-## Next Gate
+## 下一阶段验收顺序
 
-The next allowed Gate is model visual approval, followed by Phase 1 swerve verification. Mid-360, Point-LIO, Nav2, behavior trees, and RL remain downstream work.
+1. 运行 ROS 无关单元测试和协议测试；
+2. 在 Ubuntu 24.04/Jazzy 安装依赖并构建五个 ROS 包；
+3. 通过 Mock 闭环验证 `/cmd_vel` → safety → `/sentry/cmd_vel_safe`；
+4. 在明确批准的 USD 上重新做 Isaac GUI/运动学检查；
+5. 再接入 Nav2、Point-LIO、NUC 和 STM32 HIL；
+6. 最后按悬空轮、低速落地、限速限流和机械急停顺序进行实车测试。
+
+每一步必须有命令、日志和明确 PASS/FAIL，未通过不得推进。详见
+[`docs/development/TEST_GATES.md`](docs/development/TEST_GATES.md)。

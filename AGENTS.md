@@ -1,63 +1,57 @@
-# Sentinel repository instructions
+# Sentinel Agent Guidelines
 
-## Read first
+## Project Mission
 
-Before changing code, read:
+This is the primary software repository for a RoboMaster autonomous sentry robot. The main development areas are ROS 2 Jazzy, NVIDIA Isaac Sim 6.0.1, a four-module swerve chassis, gimbal control, navigation, perception, adversarial simulation, and later Isaac Lab / reinforcement learning.
 
-1. `PROJECT_STATE.md`
-2. `HARNESS_RMUL_SENTRY_MASTER_FRAMEWORK.md`
-3. the document for the subsystem being changed
+The repository combines ROS 2 packages (`ros2_ws/src`), Python training code (`training`), Isaac Sim integration (`isaac_sim`), system configuration (`config`), and a shared C11 protocol (`firmware/protocol`). Treat `firmware/vendor/`, third-party imports, and generated `ros2_ws/{build,install,log}` content as out of scope unless a task explicitly targets them.
 
-Do not turn an archived PASS statement into a current PASS. The latest recoverable model state is `MANUAL_VISUAL_APPROVAL_REQUIRED`.
+## Fixed Local Paths
 
-## Current scope
+- Primary software repository: `/home/xkddyl/RoboMaster/Sentinel/SentinelWorkspace/workspace`
+- ROS 2 workspace: `/home/xkddyl/RoboMaster/Sentinel/SentinelWorkspace/workspace/ros2_ws`
+- Isaac integration: `/home/xkddyl/RoboMaster/Sentinel/SentinelWorkspace/workspace/isaac_sim`
+- Isaac/USD asset project: `/home/xkddyl/RoboMaster/Sentinel/sentinelusd/Sentry_IsaacSim_Linux`
+- Isaac Sim: `/home/xkddyl/issac-sim/isaac-sim`
+- Isaac Sim Python: `/home/xkddyl/issac-sim/isaac-sim/python.sh`
 
-The active engineering line is Phase 1: four-module swerve foundations and a trustworthy Isaac model baseline. Do not start Point-LIO, Nav2, terrain, behavior-tree, or RL implementation until the corresponding Gate is explicitly passed.
+Do not physically merge or move the software repository and USD asset project. Do not initialize Git in `/home/xkddyl/RoboMaster/Sentinel`, and leave its empty `.git` directory untouched.
 
-## Protected conclusions
+## Integration and Asset Rules
 
-- V2 model output and its FULL package are `INVALID_VISUAL_ASSEMBLY`.
-- Historical Stage5C hash `ffa8ecbf83a047f05cc1e4aeb3005b1fa8c09da651c273bb4a4d03a62a0dcacc` identifies an old checkpoint only.
-- Historical Stage5D straight/lateral/diagonal/rotate results are not current recovery evidence.
-- V3 HOOPS Variant A uses `globalXforms=false` and is the recommended raw candidate. It still needs human visual approval.
-- Do not retry a global `set_physics_dt(1/200)` experiment; it previously caused RTX LiDAR device loss and crashes.
+- Never copy the canonical USD into the ROS 2 workspace. ROS-side code must resolve the single source through `SENTRY_USD_PATH` or an explicit launch/config parameter.
+- Never overwrite an approved stage. Any new Stage 5D/V3 USD must be derived into a new file.
+- The approved USD path is never inferred from this repository; pass it explicitly through
+  `SENTRY_USD_PATH` after human GUI approval. Historical Stage5C/Stage5D files are evidence only.
+- Do not guess Isaac Sim APIs from memory. Inspect the installed Isaac Sim 6.0.1 extensions and standalone examples first, then reuse the local API demonstrated there.
+- Keep simulation, HIL, and real-hardware boundaries explicit. Validation must progress Mock → simulation → HIL → real hardware.
+- Do not create duplicate ROS packages. `sentinel_interfaces` owns the current custom messages/services; assess the existing `isaac_sim` and `sentinel_bringup` integration before proposing another bridge package.
 
-## Control and safety ownership
+## Required Workflow
 
-- Planner, teleop, MCP, and policy outputs enter through `/cmd_vel`.
-- `safety_supervisor` alone publishes `/sentry/cmd_vel_safe`.
-- A simulation adapter or hardware bridge consumes the safe command; never both for the same actuator.
-- STM32 owns the hard real-time motor loops, final limits, watchdog, power fallback, and emergency stop.
-- MCP is diagnostic by default. Motion requires explicit human enable and must never bypass the safety path.
-- Exactly one component owns each dynamic TF edge and each actuator loop.
+Before editing, read `README.md`, `ARCHITECTURE.md`, and the relevant module documentation, especially `docs/TOPIC_CONTRACT.md` or `docs/REAL_INTEGRATION.md`. Run `git status --short` first, preserve all user changes, and modify only files required by the task. Never overwrite, revert, reformat, or otherwise absorb unrelated work.
 
-## Shared C++ rules
+After completing a task, report files changed, commands run and their results, checks not performed, remaining risks or hardware-dependent validation, `git diff --stat`, and `git status --short`. Update `PROJECT_STATE.md` after each completed integration phase.
 
-`sentinel_common` must remain independent of ROS, Isaac Sim, STM32 HAL, FreeRTOS, CAN, and UART. Keep it suitable for C++17 embedded builds:
+All validation gates must be truthful. A failed test must return and print FAIL. Shell exit status/output and JSON reports must agree; never print PASS when the report gate failed.
 
-- no dynamic allocation in the control path;
-- no exceptions or RTTI requirement;
-- fixed-size containers;
-- explicit SI units in names;
-- no hidden fixed control period;
-- deterministic, host-testable pure calculations.
+## Build and Verification
 
-## Repository safety
+Use repository-provided commands from the workspace root. Integration entry points live in `tools/integration/`.
 
-- Preserve user changes and dirty worktrees.
-- Do not run destructive Git commands or force-push.
-- Do not commit credentials, private keys, machine passwords, internal IP logs, installers, archives, STEP files, generated USD, build trees, or rosbag data.
-- Do not vendor third-party repositories. Record repository URL, branch, and commit instead.
-- Archived scripts are evidence and migration aids; update active documentation rather than silently rewriting historical records.
+- `bash tools/ubuntu/run_checks.sh`: ROS-independent unit tests and Python byte-compilation.
+- `python3 -m unittest discover -s tests -v`: focused ROS-independent tests.
+- `tools/integration/build_ros2.sh`: build `ros2_ws` only after dependencies are available and authorized.
+- `bash tools/ubuntu/run_smoke.sh`: Mock control-loop smoke test after building.
+- `bash tools/ubuntu/run_sim.sh`: ROS simulation stack after Mock succeeds.
 
-## Minimum verification
+For ROS 2 changes, build affected packages, run relevant tests, and verify names, types, ownership, and safety flow against `docs/TOPIC_CONTRACT.md`. For communication-protocol changes, check Python encoding/decoding, ROS 2 messages/bridge behavior, and the STM32 implementation together.
 
-For shared C++ changes:
+## Safety and Permission Boundaries
 
-```bash
-cmake -S . -B build -DSENTRY_BUILD_TESTS=ON
-cmake --build build
-ctest --test-dir build --output-on-failure
-```
-
-For shell/Python changes, run syntax checks. Before a commit, run `git diff --check`, a secret scan, and a large-file scan.
+- Do not run `sudo`, `apt install`, `pip install`, or `tools/ubuntu/bootstrap_jazzy.sh` automatically. State what is missing and why, then obtain authorization.
+- Do not modify system ROS 2 or any file in the official Isaac Sim installation.
+- Do not alter Git history, create remotes, or discard user changes. Commits/pushes are
+  allowed only when the user explicitly requests repository integration.
+- Never independently run `run_real.sh`, `release_estop.sh`, OpenOCD, `st-flash`, `dfu-util`, or any firmware flashing operation.
+- Do not connect to, command, or drive a real chassis, gimbal, or launcher without explicit item-by-item confirmation. Safety supervision and emergency stop must never be bypassed.

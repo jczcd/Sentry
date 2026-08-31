@@ -52,7 +52,7 @@ The checked-in configuration is:
     "rosMcp": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["ros-mcp==3.1.0", "--transport=stdio"],
+      "args": ["--from", "ros-mcp==3.1.0", "ros-mcp", "--transport=stdio"],
       "cwd": "${workspaceFolder}"
     }
   }

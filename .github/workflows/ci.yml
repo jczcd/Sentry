@@ -15,5 +15,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Install Python test dependencies
+        run: python3 -m pip install --disable-pip-version-check pyyaml numpy
+
       - name: Validate repository
         run: ./tools/validate_repo.sh

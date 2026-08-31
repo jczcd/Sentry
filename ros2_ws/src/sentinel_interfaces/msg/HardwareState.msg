@@ -1,0 +1,9 @@
+std_msgs/Header header
+bool online
+bool estop
+float32 heat_17
+float32 heat_17_limit
+float32 ammo_remaining
+float32 battery_voltage
+uint32 fault_flags
+uint16 last_rx_sequence

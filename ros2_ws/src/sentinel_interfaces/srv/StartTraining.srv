@@ -1,0 +1,6 @@
+string config_path
+string run_name
+---
+bool accepted
+int32 pid
+string reason

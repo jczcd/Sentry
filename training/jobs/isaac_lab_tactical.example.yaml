@@ -1,0 +1,8 @@
+kind: isaac_lab
+# Isaac Lab must already be installed and the custom task registered.
+isaac_lab_root: ${ISAACLAB_ROOT}
+script: scripts/reinforcement_learning/rsl_rl/train.py
+task: Sentinel-Tactical-Direct-v0
+headless: true
+num_envs: 1024
+extra_args: []

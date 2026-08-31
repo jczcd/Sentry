@@ -1,0 +1,4 @@
+bool engaged
+---
+bool accepted
+string reason

@@ -66,3 +66,14 @@ _build/
 cache/
 kit/cache/
 ov/
+
+# Downloaded third-party checkouts are reproducible from VERSIONS.lock.yaml.
+ros2_ws/src/third_party/*
+!ros2_ws/src/third_party/README.md
+firmware/vendor/*
+!firmware/vendor/README.md
+training/RMUC-OfflineRL/
+!training/RMUC-OfflineRL/README.md
+!training/RMUC-OfflineRL/LICENSE
+!training/RMUC-OfflineRL/THIRD_PARTY_NOTICES.md
+!training/RMUC-OfflineRL/UPSTREAM_COMMIT.txt
